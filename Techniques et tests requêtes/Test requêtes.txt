@@ -1,0 +1,29 @@
+-- Requête pour obtenir la liste de tous les matches (par journée). 
+SELECT journee, date, dom.nom, ext.nom 
+from equipe as dom 
+inner join matchs on dom.id = matchs.id_eq_dom 
+inner join equipe as EXT on ext.id = matchs.id_eq_ext 
+order by journee,date
+
+-- Idem mais avec les scores    (bon, j'ai besoin de réviser mon SQL.)
+????
+
+-- Modifier les journées d'une série de matches :
+UPDATE `matchs` SET journee=4 where '2016-09-09'<=date and date <'2016-09-12'
+
+
+-- Voir les buts d'un match d'une journée
+SELECT * FROM `but` where journee = 3
+
+-- Liste de tous les matches avec les scores,
+-- (voir "histoire des requêtes buts.txt")
+SELECT matchs.journee as jour, date, dom.nom as domicile, 
+count(CASE WHEN but_marque.id_equipe=dom.id THEN 1 END) as score1, 
+count(CASE WHEN but_marque.id_equipe=ext.id THEN 1 END) as score2, 
+ext.nom as exterieur FROM matchs
+  INNER JOIN equipe as dom on dom.id = matchs.id_eq_dom 
+  INNER JOIN equipe as ext on ext.id = matchs.id_eq_ext 
+  INNER JOIN but as but_marque on but_marque.journee = matchs.journee
+  WHERE but_marque.id_equipe in (dom.id,ext.id)
+    GROUP BY matchs.journee,date,dom.nom,ext.nom
+    ORDER BY matchs.journee,date

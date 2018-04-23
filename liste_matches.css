@@ -1,0 +1,9 @@
+.span_equipe{
+	border:1px solid;
+	display:inline-block;
+	width:50 px;
+}
+
+.div_rencontres input{
+	width:40 px;
+}

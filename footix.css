@@ -1,0 +1,111 @@
+﻿body
+{
+    background-image: url("seamless_herbe_carree.jpg");
+}
+
+section{
+	display:flex;
+	margin-top:32px;
+}
+
+header h2
+{
+	font-family: "Trebuchet MS";
+	font-size: 2.5em;
+	margin: 3px;
+	text-align: center;
+}
+
+nav{
+	flex: 1;
+	background-image: url("seamless_herbe_carree_sombre.jpg");
+	border-color: rgb(128,0,64);
+	border-radius: 9px;
+	box-shadow: 0px 0px 5px 5px rgb(128,0,64);
+	padding-left: 8px;
+	margin-right: 16px; 
+	color : rgb(255,255,0);
+	font-family: Verdana;
+	font-size: 0.7em;
+}
+
+#principal{
+	flex: 7;
+}
+
+nav a:visited{
+	color: rgb(255,128,0);	
+}
+
+.sidenote
+{	
+	font-size: x-small;
+}
+
+.span_equipe, #span_clic_appliquerSchema /*Blocs cliqués pour : permuter équipes dans schémas/ appliquer schéma*/
+{
+	background-color:rgb(255,255,255);
+	font-size: 0.8em;
+	color:rgb(128,128,128);
+	border-color:rgb(128,128,128);
+	border-radius: 2px;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.span_equipe:hover, #span_clic_appliquerSchema:hover {
+	cursor: pointer;
+}
+
+.span_clic_appliquerSchema
+{
+	
+}
+
+.span_requete_sql
+{
+	background-color: rgb(255,255,255);
+	font-size : small;
+	color: rgb(255,0,0);
+	border-color: rgb(255,0,0);
+	border-style: solid;
+	border-width: 1px;
+}
+
+#corps{
+	color: rgb(255,0,192);
+}
+
+table{
+	border-collapse : collapse;
+}
+
+#table_gros_tableau td{
+ background-color : #ffffff;
+	border: 1px solid black;
+	width: 35px;
+	text-align : center;
+	font-family: Arial;
+	font-size : 0.8em;
+}
+
+#table_gros_tableau td[class=dompppp]{ background-color : #2222ff;} /*Si on oublie le #table_gros_tableau un style appliqué sur un #table_gros_tableau est prioritaire*/
+#table_gros_tableau td[class=domppp]{ background-color : #5555ff;}
+#table_gros_tableau td[class=dompp]{ background-color : #9999ff;}
+#table_gros_tableau td[class=domp]{ background-color : #ccccff;}
+#table_gros_tableau td[class=nulv]{ background-color : #ffffcc;}
+#table_gros_tableau td[class=nulnv]{ background-color : #ffff99;}
+#table_gros_tableau td[class=extp]{ background-color : #ffcccc;}
+#table_gros_tableau td[class=extpp]{ background-color : #ff9999;}
+#table_gros_tableau td[class=extppp]{ background-color : #ff5555;}
+#table_gros_tableau td[class=extpppp]{ background-color : #ff2222;}
+#table_gros_tableau td[class=ndplm]{ background-color : #eeeeee;}
+
+#table_petit_tableau td{
+	 background-color : #ffffff;
+	border: 1px solid black;
+	width: 35px;
+	text-align : center;
+	font-family: Arial;
+	font-size : 0.8em;
+}

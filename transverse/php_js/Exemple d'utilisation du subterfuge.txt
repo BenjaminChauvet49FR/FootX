@@ -1,0 +1,57 @@
+
+<?php /*
+//
+
+	$tableau_test[1]=3;
+	$tableau_test[2]=17;
+	$tableau_test[3]=8;
+	$tableau_test[4]=5;
+	$tableau_test[5]=14;
+	$tableau_test[6]=11;
+	$tableau_test[7]=6;
+	$tableau_test[8]=2;
+	$tableau_test[9]=19;
+	$tableau_test[10]=15;
+	$tableau_test[11]=10;
+	$chaine_test = tableau_vers_chaine($tableau_test);
+
+echo('
+<table id="table_test"></table>
+<script>
+
+	function sortNumber(a,b) {
+		return a - b;
+	}
+
+	function noeudTD(s){
+		var reponse = document.createElement("td");
+		reponse.innerHTML = s;
+		return reponse;
+	}
+
+	var tableau = chaine_vers_tableau("'.$chaine_test.'");
+	var element_tableau = document.getElementById("table_test");
+	var element_tr = document.createElement("tr");
+	for(i=0;i<tableau.length;i++){
+		element_tr.appendChild(noeudTD(tableau[i]));	
+		//element_tr.appendChild(noeudTD("k"));
+	}	
+	
+	element_tableau.appendChild(element_tr);
+	
+	element_tableau.addEventListener(\'click\',function(e){
+		tableau.sort(sortNumber);
+		element_tr.innerHTML = "";
+		for(i=0;i<tableau.length;i++){
+			element_tr.appendChild(noeudTD(tableau[i]));		
+		}	
+	}); 
+</script>');
+
+
+*/
+
+
+?>
+
+

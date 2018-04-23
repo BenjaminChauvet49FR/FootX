@@ -1,0 +1,127 @@
+-- Quelques requêtes différentes sur les buts
+--SELECT journee FROM but -- une ligne par buts
+SELECT journee FROM but group by journee -- sélectionne les journées distinctes.
+SELECT journee,count(journee) as 'nb buts' FROM but group by journee -- sélectionne les journées distinctes et le nombre de buts par jour.
+-- pour comparer : https://fr.wikipedia.org/wiki/Championnat_de_France_de_football_2016-2017#Classement
+SELECT journee, min FROM but group by journee -- IMPOSSIBLE car il n'y a pas de clause de groupement par minute.
+
+-- Et pendant ce temps sous les sous-requêtes :
+SELECT jour, date, domicile, exterieur FROM (
+    SELECT journee as jour, date, dom.nom as domicile, ext.nom as exterieur FROM matchs
+      INNER JOIN equipe as dom on dom.id = matchs.id_eq_dom 
+      INNER JOIN equipe as ext on ext.id = matchs.id_eq_ext  
+      ORDER BY journee
+) as rencontre
+-- Ah, on avance. 
+-- Maintenant, place aux... buts !
+
+-- Liste de tous les buts ! (qui ne précise pas qui a marqué)
+SELECT matchs.journee as jour, date, dom.nom as domicile, but_marque.min, ext.nom as exterieur FROM matchs
+      INNER JOIN equipe as dom on dom.id = matchs.id_eq_dom 
+      INNER JOIN equipe as ext on ext.id = matchs.id_eq_ext 
+      INNER JOIN but as but_marque on but_marque.journee = matchs.journee
+      where but_marque.id_equipe in (matchs.id_eq_dom,matchs.id_eq_ext)
+      ORDER by matchs.journee,matchs.date
+-- la clause WHERE doit être après toutes les jointures. 
+-- une fois un alias attribué à une table, il faut toujours réutiiser cet alias (but.journee ne convient pas si l'alias but_marque a été donné à but)
+
+
+-- PRESQUE ! J'ai la liste de tous les matches avec le nombre de buts que chaque équipe a marqué.
+-- Reste à faire tenir tout sur une ligne
+SELECT matchs.journee as jour, date, dom.nom as domicile, count(but_marque.id_equipe), ext.nom as exterieur FROM matchs
+      INNER JOIN equipe as dom on dom.id = matchs.id_eq_dom 
+      INNER JOIN equipe as ext on ext.id = matchs.id_eq_ext 
+      INNER JOIN but as but_marque on but_marque.journee = matchs.journee
+	  where but_marque.id_equipe in (dom.id,ext.id)
+      group by matchs.journee,date,dom.nom,ext.nom,but_marque.id_equipe
+      ORDER by matchs.journee,date
+      
+      
+-- OBJECTIF ATTEINT !     
+-- Grâce à count(CASE) on peut compter les scores pour chaque équipe. Ensuite, pour éviter de faire une ligne par équipe qui a marqué au moins un but, il ne faut pas faire un group_by sur but_marque.id
+      SELECT matchs.journee as jour, date, dom.nom as domicile, 
+count(CASE WHEN but_marque.id_equipe=dom.id THEN 1 END) as score1, 
+count(CASE WHEN but_marque.id_equipe=ext.id THEN 1 END) as score2, 
+ext.nom as exterieur FROM matchs
+      INNER JOIN equipe as dom on dom.id = matchs.id_eq_dom 
+      INNER JOIN equipe as ext on ext.id = matchs.id_eq_ext 
+      INNER JOIN but as but_marque on but_marque.journee = matchs.journee
+	  where but_marque.id_equipe in (dom.id,ext.id)
+      group by matchs.journee,date,dom.nom,ext.nom
+      ORDER by matchs.journee,date
+	  
+	  
+-- EXTENSION AUX NOUVELLES SAISONS + vue
+-- Idem la table précédente mais on crée une vue ET on gère les différentes saisons
+Create or replace view v_match AS
+      SELECT 
+	  matchs.date AS date,
+	  matchs.id_saison AS id_saison,
+	  matchs.journee as jour, 
+      matchs.date as date_heure, 
+      eq_dom.nom as domicile, 
+count(CASE WHEN but_marque.num_equipe=es_dom.numero THEN 1 END) as score1, 
+count(CASE WHEN but_marque.num_equipe=es_ext.numero THEN 1 END) as score2, 
+eq_ext.nom as exterieur FROM matchs
+      INNER JOIN equipe_saison as es_dom on es_dom.numero = matchs.num_eq_dom 
+      INNER JOIN equipe as eq_dom on es_dom.id_equipe = eq_dom.id
+      INNER JOIN equipe_saison as es_ext on es_ext.numero = matchs.num_eq_ext
+      INNER JOIN equipe as eq_ext on es_ext.id_equipe = eq_ext.id 
+      JOIN but as but_marque on (but_marque.journee = matchs.journee AND but_marque.id_saison = matchs.id_saison)
+	  where but_marque.num_equipe in (es_dom.numero,es_ext.numero)
+      group by matchs.id_saison,matchs.journee,matchs.date,eq_dom.nom,eq_ext.nom
+      ORDER by matchs.id_saison,matchs.journee,matchs.date
+	  
+-- ALERTE : La requete précédente est incorrecte car elle ne prend pas en compte les matches sans but (par exemple Marseille-Toulouse de la J1 de 2016/17).
+-- Voici une requête minimaliste illustrant la jointure gauche matchs - buts 
+Create or replace view v_match AS
+      SELECT 
+	  matchs.date AS date,
+	  matchs.id,
+	  but_marque.min
+	  from 
+	  matchs
+      LEFT JOIN but as but_marque on (but_marque.journee = matchs.journee and but_marque.num_equipe in (matchs.num_eq_dom,matchs.num_eq_ext))
+
+	  
+-- Tout serait dans la définition de la jointure entre match et but (jointure qu'on peut rendre plus compliquée au passage) ? Défi accepté.
+-- Au passage, changement des colonnes (nom -> dim_nom, et score1/2 s'appellent différement)
+Create or replace view v_match AS
+      SELECT 
+	  matchs.date AS date,
+	  matchs.id_saison AS id_saison,
+	  matchs.journee as jour, 
+      matchs.date as date_heure, 
+      eq_dom.dim_nom as domicile, 
+count(CASE WHEN but_marque.num_equipe=es_dom.numero THEN 1 END) as score_dom, 
+count(CASE WHEN but_marque.num_equipe=es_ext.numero THEN 1 END) as score_ext, 
+eq_ext.dim_nom as exterieur FROM matchs
+      INNER JOIN equipe_saison as es_dom on es_dom.numero = matchs.num_eq_dom 
+      INNER JOIN equipe as eq_dom on es_dom.id_equipe = eq_dom.id
+      INNER JOIN equipe_saison as es_ext on es_ext.numero = matchs.num_eq_ext
+      INNER JOIN equipe as eq_ext on es_ext.id_equipe = eq_ext.id 
+      LEFT JOIN but as but_marque on (but_marque.journee = matchs.journee AND but_marque.id_saison = matchs.id_saison and but_marque.num_equipe in (es_dom.numero,es_ext.numero))
+      group by matchs.id_saison,matchs.journee,matchs.date,eq_dom.dim_nom,eq_ext.dim_nom
+      ORDER by matchs.id_saison,matchs.journee,matchs.date
+	  
+	-- A noter : L'opération "group by" doit obligatoirement se faire sur des requêtes du select : il est impossible de sélectionner le dim_nom (mais pas le nom) et de grouper par nom.
+  
+  
+--J'avais oublié quelques jointures essentielles...  
+  Create or replace view v_match AS
+      SELECT 
+	  matchs.date AS date,
+	  matchs.id_saison AS id_saison,
+	  matchs.journee as jour, 
+      matchs.date as date_heure, 
+      eq_dom.dim_nom as dim_nom_dom, 
+count(CASE WHEN but_marque.num_equipe=es_dom.numero THEN 1 END) as score_dom, 
+count(CASE WHEN but_marque.num_equipe=es_ext.numero THEN 1 END) as score_ext, 
+eq_ext.dim_nom as dim_nom_ext FROM matchs
+      INNER JOIN equipe_saison as es_dom on (es_dom.numero = matchs.num_eq_dom and matchs.id_saison = es_dom.id_saison)
+      INNER JOIN equipe as eq_dom on es_dom.id_equipe = eq_dom.id
+      INNER JOIN equipe_saison as es_ext on (es_ext.numero = matchs.num_eq_ext and matchs.id_saison = es_ext.id_saison)
+      INNER JOIN equipe as eq_ext on es_ext.id_equipe = eq_ext.id 
+      LEFT JOIN but as but_marque on (but_marque.journee = matchs.journee AND but_marque.id_saison = matchs.id_saison and but_marque.num_equipe in (es_dom.numero,es_ext.numero))
+      group by matchs.id_saison,matchs.journee,matchs.date,eq_dom.dim_nom,eq_ext.dim_nom
+      ORDER by matchs.id_saison,matchs.journee,matchs.date

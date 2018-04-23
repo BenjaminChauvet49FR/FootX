@@ -1,0 +1,1 @@
+UPDATE `matchs` SET `date` = '2017-10-15 17:00:00' WHERE `matchs`.`id` = 593;

@@ -1,0 +1,7 @@
+->Modifier date et journée d'un match (voir équipes ?)
+->Retrouver la constantes nv_equipes...
+->Fonctionnalité de suppression
+
+Données :
+-> Match Bastia-OL (J33) : gérer le cas du match gagné sur tapis vert
+-> Gérer buts temps additionnel

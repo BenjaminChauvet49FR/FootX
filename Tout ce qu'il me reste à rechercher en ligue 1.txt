@@ -1,0 +1,45 @@
+-L'intégrale de domination d'un match
+
+
+-Les scores les plus répandus pour une équipe
+
+-La liste des triangles sur une période
+-La liste des triangles extérieurs
+-Les plus larges victoires et défaites d'un club
+-Les tranches horaires les plus favorables à un club donné
+-Les meilleurs clubs par tranche horaire
+
+----
+
+Fiche d'une équipe :
+
+-Liste des matches + résultats + minutes du but
++Liste des buts par 10 minutes/quart d'heure
++Liste des doubles confrontations
++Plus larges victoires et défaites
+
+----
+
+Tableau général : 
+-Tableau des résultats
+-Tableau des journées
+-liste doubles-confrontations ?
+-Classement et évolutions (gérer les problèmes des matches de retard)
+-tableau des résultats en présentant les équipes par ordre décroissant des résultats
+
+----
+
+Pages des classements des équipes
+=(trucs similaires à lfp.fr)
++ Les points gagnés/perdus après...
+	-avoir eu/subi l'ouverture du score
+	-avoir été mené/avoir mené au score
+	-la 45ème/60/75/80/90ème minute
++ l'intégrale de domination d'un match
+-Les classements de l'ouverture des scores uniquement
+-Les classements des pénalties uniquement
+-Les classements des CLC uniquement
+
+----
+
+Pages des classements des journées

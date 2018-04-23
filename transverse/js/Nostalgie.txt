@@ -1,0 +1,3 @@
+Pour arriver à faire une fonction de tri sur le "petit tableau" des stats saison (une fois celui-ci mis en place et acquis au javascript) j'ai galéré.
+1) J'ai confondu "children[0].length" et "children[0].children.length" du coup certaines boucles for ne passaient plus
+2) J'ai dû repérer que l'élément "petit_tableau" avait un unique élément enfant qui était un <tbody>, et non plusieurs éléments enfants <tr>
